@@ -50,7 +50,18 @@ def output_module():  # This function prints which module the player is in and a
     print()
     print("-----------------------------------------------------------------")
     print()
-    if module != 99:
+    if module == -1:
+        print("Easter egg found!")
+        negative_egg = "Module-1 Egg"
+        if negative_egg not in easter_eggs:
+            easter_eggs.append(negative_egg)
+
+    elif module == 99:
+        print("Easter egg found!")
+        module99_egg = "Module99 Egg"
+        if module99_egg not in easter_eggs:
+            easter_eggs.append(module99_egg)
+    else:
         print("You are in module", module, ".")
         if module in workers:
             print()
@@ -61,14 +72,9 @@ def output_module():  # This function prints which module the player is in and a
         if module in info_panels:
             print()
             print("There are info panels in here...")
-        print()
         if fuel < 100:
             print("LOW FUEL WARNING!")
-    elif module == 99:
-        print("Easter egg found!")
-        module99_egg = "Module99 Egg"
-        if module99_egg not in easter_eggs:
-            easter_eggs.append(module99_egg)
+        print()
 
 
 def output_moves():  # This function prints the possible modules the player may move to.
@@ -164,6 +170,12 @@ def get_action():  # This function gets what the player wants to do and where th
             print("You are in module", module, ".")
             input("Press any button to continue...")
             print("-----------------------------------------------------------------")
+        elif action_modified.upper() == "EGG":
+            print("Easter egg found!")
+            action_egg = "Action Egg"
+            if action_egg not in easter_eggs:
+                easter_eggs.append(action_egg)
+            input("Press any button to continue...")
 
 
 def spawn_npcs():  # This function spawns NPCS.
@@ -207,7 +219,10 @@ def check_vent_shafts():  # This function checks if the player is in a module wi
         input("Press any button to continue...")
         print("-----------------------------------------------------------------")
         last_module = module
-        module = random.choice([i for i in range(1, num_modules) if i not in [last_module]])
+        if random.randint(1, 100) == 1:
+            module = -1
+        else:
+            module = random.choice([i for i in range(1, num_modules) if i not in [last_module]])
         load_module()
 
 
@@ -665,8 +680,10 @@ def menu():
         input("Press any key to return to the main menu...")
         menu()
     elif action == 4:
-        print("There are _ easter eggs in the game. Try to find them all!")
+        print("There are 4 easter eggs in the game. Try to find them all!")
         print("Your current list of easter eggs found:", easter_eggs)
+        if len(easter_eggs) == 4:
+            print("Congratulations! You have found all the easter eggs! ")
         input("Press any key to return to the main menu...")
         menu()
     elif action == 5:
