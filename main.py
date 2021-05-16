@@ -617,25 +617,81 @@ def check_teleporter():
 
 # Main program starts here
 
-spawn_npcs()  # Calls the function
-print("Ventilation shafts are located in modules:", vent_shafts)
-print("Information panels are located in modules:", info_panels)
-print("Worker aliens are located in modules:", workers)
+def menu():
+    print(r""" ███████████          ████   ███                            
+░█░░░███░░░█         ░░███  ░░░                             
+░   ░███  ░   ██████  ░███  ████  █████ ████ █████████████  
+    ░███     ███░░███ ░███ ░░███ ░░███ ░███ ░░███░░███░░███ 
+    ░███    ░███████  ░███  ░███  ░███ ░███  ░███ ░███ ░███ 
+    ░███    ░███░░░   ░███  ░███  ░███ ░███  ░███ ░███ ░███ 
+    █████   ░░██████  █████ █████ ░░████████ █████░███ █████
+   ░░░░░     ░░░░░░  ░░░░░ ░░░░░   ░░░░░░░░ ░░░░░ ░░░ ░░░░░ 
+                                                            
+                                                            
+                                                            """)
+    print("1. Start")
+    print("2. How to play")
+    print("3. Credits")
+    action = int(input(">"))
+    if action == 1:
+        print("Loading game...")
+        time.sleep(2)
+        input("Press any key to begin...")
+        print("-----------------------------------------------------------------")
+        print()
+        print("-----------------------------------------------------------------")
+        print()
+        main()
+    elif action == 2:
+        print(
+            "\n Telium is a text-based game which means that you will have to type things in.\n "
+            "The objective is to kill the queen who is in one of the 17 modules.\n The queen "
+            "has workers which you will also encounter.\n There are additional objects such as "
+            "info-panels and vents.\n The queen can escape and so you must use your scanner to "
+            "lock certain modules to stop her from escaping. \n You can figure the rest out for yourself!\n Good luck!")
+        input("Press any key to return to the main menu...")
+        menu()
+    elif action == 3:
+        print("Created by Prince.")
+        input("Press any key to return to the main menu...")
+        menu()
 
-while alive and not won:
-    load_module()
-    move_queen()
-    check_vent_shafts()
-    check_info_panels()
-    check_power_distributor()
-    check_teleporter()
-    worker_aliens()
-    if won == False and alive == True:
-        intuition()
-        output_moves()
-        get_action()
 
-if won:
-    print("Game over. You win!")
-if not alive:
-    print("Game Over. You lose.")
+def main():
+    spawn_npcs()  # Calls the function
+    print("Ventilation shafts are located in modules:", vent_shafts)
+    print("Information panels are located in modules:", info_panels)
+    print("Worker aliens are located in modules:", workers)
+
+    while alive and not won:
+        load_module()
+        move_queen()
+        check_vent_shafts()
+        check_info_panels()
+        check_power_distributor()
+        check_teleporter()
+        worker_aliens()
+        if won == False and alive == True:
+            intuition()
+            output_moves()
+            get_action()
+
+    if won:
+        print("Game over. You win!")
+        input("Press any key to finish...")
+        print("-----------------------------------------------------------------")
+        print()
+        print("-----------------------------------------------------------------")
+        print()
+        menu()
+    if not alive:
+        print("Game Over. You lose.")
+        input("Press any key to finish...")
+        print("-----------------------------------------------------------------")
+        print()
+        print("-----------------------------------------------------------------")
+        print()
+        menu()
+
+
+menu()
