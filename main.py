@@ -6,22 +6,22 @@ import time
 
 # Global variables
 
-num_modules = 17  # The number of modules in the space station
-module = 1  # The module of the space station we are in
-last_module = 0  # The last module we were in
-possible_moves = []  # List of the possible moves we can make
-alive = True  # Whether the player is alive or dead
-won = False  # Whether the player has won
-power = 100  # The amount of power the space station has
-fuel = 500  # The amount of fuel the player has in the flamethrower
-locked = 0  # The module that has been locked by the player
-queen = 0  # Location of the queen alien
-vent_shafts = []  # Location of the ventilation shaft entrances
-info_panels = []  # Location of the information panels
-workers = []  # Location of the worker aliens
-previously_locked = []  # Locked modules
-power_distributor = 0
-teleporter = 0
+num_modules = 17  # The number of modules in the space station.
+module = 1  # The module of the space station we are in.
+last_module = 0  # The last module we were in.
+possible_moves = []  # List of the possible moves we can make.
+alive = True  # Whether the player is alive or dead.
+won = False  # Whether the player has won.
+power = 150  # The amount of power the space station has.
+fuel = 500  # The amount of fuel the player has in the flamethrower.
+locked = 0  # The module that has been locked by the player.
+queen = 0  # Location of the queen alien.
+vent_shafts = []  # Location of the ventilation shaft entrances.
+info_panels = []  # Location of the information panels.
+workers = []  # Location of the worker aliens.
+previously_locked = []  # Locked modules.
+power_distributor = 0  # Location of the power distributor.
+teleporter = 0  # Location of the teleporter.
 
 
 # Procedure declarations
@@ -50,16 +50,13 @@ def output_module():  # This function prints which module the player is in and a
     print("-----------------------------------------------------------------")
     print()
     print("You are in module", module, ".")
-    if module == queen:
-        print()
-        print("There is a queen in here...")
-    elif module in workers:
+    if module in workers:
         print()
         print("There are workers in here...")
-    elif module in vent_shafts:
+    if module in vent_shafts:
         print()
         print("There are vent shafts in here...")
-    elif module in info_panels:
+    if module in info_panels:
         print()
         print("There are info panels in here...")
     print()
@@ -171,7 +168,7 @@ def spawn_npcs():  # This function spawns NPCS.
     i = 0
     queen = module_set[i]
     power_distributor = module_set[i + 11]
-    teleporter = 1  # module_set[i + 12]
+    teleporter = module_set[i + 12]
 
     for counter in range(0, 3):
         i = i + 1
@@ -420,9 +417,10 @@ def move_queen():
             if last_module in escapes and can_move_to_last_module == False:
                 escapes.remove(last_module)
             # Remove a module that is locked as an escape
-            if locked in escapes:
-                escapes.remove(locked)
-            # If there is no escape then player has won...
+            for i in range(len(previously_locked)):
+                if previously_locked[i] in escapes:
+                    escapes.remove(previously_locked[i])
+
             if len(escapes) == 0:
                 moves_to_make = 0
                 print("...and the door is locked. It's trapped.")
@@ -582,7 +580,7 @@ def check_power_distributor():
                 print("100% complete")
                 print("Fuel:", fuel)
                 print("Power:", power)
-                print("Press any key to continue...")
+                input("Press any key to continue...")
             else:
                 print("ERROR!")
                 print("Insufficient fuel amount.")
@@ -626,11 +624,11 @@ print("Worker aliens are located in modules:", workers)
 
 while alive and not won:
     load_module()
+    move_queen()
     check_vent_shafts()
     check_info_panels()
     check_power_distributor()
     check_teleporter()
-    move_queen()
     worker_aliens()
     if won == False and alive == True:
         intuition()
