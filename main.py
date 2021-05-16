@@ -20,6 +20,8 @@ vent_shafts = []  # Location of the ventilation shaft entrances
 info_panels = []  # Location of the information panels
 workers = []  # Location of the worker aliens
 previously_locked = []  # Locked modules
+power_distributor = 0
+teleporter = 0
 
 
 # Procedure declarations
@@ -75,7 +77,7 @@ def output_moves():  # This function prints the possible modules the player may 
 
 
 def get_action():  # This function gets what the player wants to do and where the player wants to move.
-    global module, last_module, possible_moves
+    global module, last_module, possible_moves, power
     valid_action = False
     while not valid_action:
         print("What do you want to do next ? (MOVE + MODULE, FUEL, SCANNER, POWER, LIFEFORMS, INFO, MAP)")
@@ -90,9 +92,53 @@ def get_action():  # This function gets what the player wants to do and where th
             else:
                 print("The module must be connected to the current module.")
         elif action_modified.upper() == "SCANNER":
-            command = input("Scanner ready. Enter command (LOCK):")
+            command = input("Scanner ready. Enter command (LOCK, SCAN):")
             if command.upper() == "LOCK":
                 lock()
+            if command.upper() == "SCAN":
+                print("Enter the module you want to scan. It must be connected to your current module.")
+                action = 0
+                while action not in possible_moves:
+                    print(possible_moves)
+                    action = int(input(">"))
+
+                if action == queen:
+                    print()
+                    print("There is a queen in there...")
+                    power -= 25
+                    print("25 fuel has been used.")
+                    input("Press any button to continue...")
+                    print("-----------------------------------------------------------------")
+                elif action in workers:
+                    print()
+                    print("There are workers in there...")
+                    power -= 25
+                    print("25 fuel has been used.")
+                    input("Press any button to continue...")
+                    print("-----------------------------------------------------------------")
+                elif action in vent_shafts:
+                    print()
+                    print("There are vent shafts in there...")
+                    power -= 25
+                    print("25 fuel has been used.")
+                    input("Press any button to continue...")
+                    print("-----------------------------------------------------------------")
+                elif action in info_panels:
+                    print()
+                    print("There are info panels in there...")
+                    power -= 25
+                    print("25 fuel has been used.")
+                    input("Press any button to continue...")
+                    print("-----------------------------------------------------------------")
+                else:
+                    print("There is nothing in there...")
+                    power -= 25
+                    print("25 fuel has been used.")
+                    input("Press any button to continue...")
+                    print("-----------------------------------------------------------------")
+
+
+
         elif action_modified.upper() == "POWER":
             print("The space station has:", power, "power.")
             print("-----------------------------------------------------------------")
@@ -117,13 +163,16 @@ def get_action():  # This function gets what the player wants to do and where th
 
 
 def spawn_npcs():  # This function spawns NPCS.
-    global num_modules, queen, vent_shafts, greedy_info_panels, workers
+    global num_modules, queen, vent_shafts, greedy_info_panels, workers, power_distributor, teleporter
     module_set = []
     for counter in range(2, num_modules):
         module_set.append(counter)
     random.shuffle(module_set)
     i = 0
     queen = module_set[i]
+    power_distributor = module_set[i + 11]
+    teleporter = 1  # module_set[i + 12]
+
     for counter in range(0, 3):
         i = i + 1
         vent_shafts.append(module_set[i])
@@ -132,13 +181,13 @@ def spawn_npcs():  # This function spawns NPCS.
         i = i + 1
         info_panels.append(module_set[i])
 
-    for counter in range(0, 3):
+    for counter in range(0, 5):
         i = i + 1
         workers.append(module_set[i])
 
 
 def check_vent_shafts():  # This function checks if the player is in a module with vent shafts and plays a sequence.
-    global num_modules, module, vent_shafts, fuel
+    global num_modules, module, vent_shafts, fuel, last_module
     if module in vent_shafts:
         print("There is a bank of fuel cells here.")
         print("You load one into your flamethrower.")
@@ -171,6 +220,7 @@ def check_info_panels():
                 input("Loading complete. Press any key to continue...")
                 print("-----------------------------------------------------------------")
                 print("The queen is in module:", queen)
+                print("The power distributor is in module:", power_distributor)
                 print("-----------------------------------------------------------------")
                 input("Press any key to continue...")
                 print("Shutting down panel...")
@@ -201,6 +251,8 @@ def lock():
         print("-----------------------------------------------------------------")
     power_used = 10 + 5 * random.randint(0, 5)
     power -= power_used
+    print(power_used, "power has been used.")
+    print("Power:", power)
 
 
 def battle():
@@ -208,7 +260,7 @@ def battle():
     print("The queen is trapped...but you must kill her...")
     input("Press any key to continue...")
     print("-----------------------------------------------------------------")
-    while alive and not won:  # START OF BATTLE GAME
+    while alive and not won:  # START OF BATTLE
         winner = None
         player_health = 100
         queen_health = 100
@@ -233,13 +285,13 @@ def battle():
             miss = False  # Determine if the chosen move will miss.
 
             # Create a dictionary of the possible moves and randomly select the damage it does when selected.
-            moves = {"Burn": random.randint(18, 25),
-                     "Mega Burn": random.randint(8, 35),
+            moves = {"Blast": random.randint(18, 25),
+                     "Mega Blast": random.randint(8, 35),
                      "Heal": random.randint(20, 25)}
 
             if player_turn:
                 print(
-                    "\nPlease select a move:\n1. Burn (Deal damage between 18-25)\n2. Mega Burn (Deal damage between "
+                    "\nPlease select a move:\n1. Blast (Deal damage between 18-25)\n2. Mega Blast (Deal damage between "
                     "8-35)\n3. Heal (Restore between 20-25 health)\n")
 
                 player_move = input("> ").lower()
@@ -255,11 +307,11 @@ def battle():
                     print("You missed!")
                 else:
                     if player_move in ("1", "punch"):
-                        player_move = moves["Burn"]
-                        print("\nYou used Burn. It dealt ", player_move, " damage.")
+                        player_move = moves["Blast"]
+                        print("\nYou used Blast. It dealt ", player_move, " damage.")
                     elif player_move in ("2", "mega punch"):
-                        player_move = moves["Mega Burn"]
-                        print("\nYou used Mega Burn. It dealt ", player_move, " damage.")
+                        player_move = moves["Mega Blast"]
+                        print("\nYou used Mega Blast. It dealt ", player_move, " damage.")
                     elif player_move in ("3", "heal"):
                         heal_up = True  # Heal activated.
                         player_move = moves["Heal"]
@@ -282,16 +334,16 @@ def battle():
                 else:
                     if queen_health > 30:
                         if player_health > 75:
-                            queen_move = moves["Burn"]
-                            print("\nThe queen used Burn. It dealt ", queen_move, " damage.")
+                            queen_move = moves["Blast"]
+                            print("\nThe queen used Blast. It dealt ", queen_move, " damage.")
                         elif 35 < player_health <= 75:  # The queen decides whether to go big or play it safe.
-                            imoves = ["Burn", "Mega Burn"]
+                            imoves = ["Blast", "Mega Blast"]
                             imoves = random.choice(imoves)
                             queen_move = moves[imoves]
                             print("\nThe queen used ", imoves, ". It dealt ", queen_move, " damage.")
                         elif player_health <= 35:
-                            queen_move = moves["Mega Burn"]
-                            print("\nThe queen used Mega Burn. It dealt ", queen_move, " damage.")
+                            queen_move = moves["Mega Blast"]
+                            print("\nThe queen used Mega Blast. It dealt ", queen_move, " damage.")
                     else:  # Ff the queen has less than 30 health, there is a 50% chance they will heal.
                         heal_or_fight = random.randint(1, 2)
                         if heal_or_fight == 1:
@@ -300,16 +352,16 @@ def battle():
                             print("\nThe queen used Heal. It healed for ", queen_move, " health.")
                         else:
                             if player_health > 75:
-                                queen_move = moves["Burn"]
-                                print("\nThe queen used Burn. It dealt ", queen_move, " damage.")
+                                queen_move = moves["Blast"]
+                                print("\nThe queen used Blast. It dealt ", queen_move, " damage.")
                             elif 35 < player_health <= 75:
-                                imoves = ["Burn", "Mega Burn"]
+                                imoves = ["Blast", "Mega Blast"]
                                 imoves = random.choice(imoves)
                                 queen_move = moves[imoves]
                                 print("\nThe queen used ", imoves, ". It dealt ", queen_move, " damage.")
                             elif player_health <= 35:
-                                queen_move = moves["Mega Burn"]  # FINISH IT!
-                                print("\nThe queen used Mega Burn. It dealt ", queen_move, " damage.")
+                                queen_move = moves["Mega Blast"]  # FINISH IT!
+                                print("\nThe queen used Mega Blast. It dealt ", queen_move, " damage.")
 
             if heal_up:
                 if player_turn:
@@ -347,7 +399,7 @@ def battle():
         else:
             print("\nPlayer health: ", player_health, "Queen health: ", queen_health)
             print("\nYou died...")
-            alive = False  # END OF BATTLE GAME
+            alive = False  # END OF BATTLE
 
 
 def move_queen():
@@ -421,6 +473,150 @@ def intuition():
             break
 
 
+def worker_aliens():
+    global module, workers, fuel, alive
+    # Output alien encountered
+    if module in workers:
+        print("Startled, a young alien scuttles across the floor.")
+        print("It turns and leaps towards us.")
+        # Get the player's action
+        successful_attack = False
+        while not successful_attack:
+            print("You can:")
+            print()
+            print("- Blast your flamethrower to frighten it away.")
+            print("- Mega Blast your flamethrower to try to kill it.")
+            print("- Run away. Note: You might die!")
+            print()
+            print("How will you react? (B, M, R)")
+            action = 0
+            while action not in ("B", "M", "R"):
+                action = input("Press the trigger: ").upper()
+
+            if action == "R":
+                print("You decide to run...")
+                death = random.randint(1, 7)
+                if death == 1:
+                    print("The alien killed you while you tried to run!")
+                    input("Press any key to continue...")
+                    alive = False
+                    return
+                else:
+                    print()
+
+                if last_module in possible_moves:
+                    module = last_module
+                    load_module()
+                    break
+                else:
+                    module = random.choice(possible_moves)
+                    load_module()
+                    break
+
+            while True:
+                try:
+                    fuel_used = float(input("How much fuel will you use? ..."))
+                    if fuel_used <= 0:
+                        raise ValueError
+                    break
+                except ValueError:
+                    print("Please type a positive number.")
+
+            fuel = fuel - fuel_used
+            # Check if player has run out of fuel
+            if fuel <= 0:
+                print("You ran out of fuel!")
+                print("The worker alien killed you...")
+                input("Press any key to continue...")
+                alive = False
+                return
+            # Work out how much fuel is needed
+            if action.upper() == "B":
+                fuel_needed = 30 + 10 * random.randint(0, 5)
+            if action.upper() == "M":
+                fuel_needed = 90 + 10 * random.randint(0, 5)
+            # Try again if not enough fuel was used
+            if fuel_used >= fuel_needed:
+                successful_attack = True
+            else:
+                print("The alien squeals but is not dead. It’s angry.")
+        # Successful action
+        if action.upper() == "B":
+            print("The alien scuttles away into the corner of the room.")
+        if action.upper() == "M":
+            print("The alien has been destroyed.")
+            # Remove the worker from the module
+            workers.remove(module)
+        print()
+
+
+def check_power_distributor():
+    global module, fuel, power, power_distributor
+    if module == power_distributor:
+        print("The power distributor is in this module.")
+        print("Would you like to convert flamethrower fuel to power?")
+        action = input(">")
+        if action.upper() in ["Y", "YES"]:
+            while True:
+                try:
+                    amount = int(input("How much fuel would you like to convert?:"))
+                    if amount <= 0:
+                        raise ValueError
+                    break
+                except ValueError:
+                    print("Please type a positive number.")
+
+            if amount < fuel:
+                print("Converting fuel...")
+                time.sleep(1)
+                print("25% complete")
+                time.sleep(1)
+                print("50% complete")
+                time.sleep(1)
+                print("75% complete")
+                time.sleep(1)
+                print("99% complete")
+                time.sleep(2)
+                fuel -= amount
+                power += amount
+                print("100% complete")
+                print("Fuel:", fuel)
+                print("Power:", power)
+                print("Press any key to continue...")
+            else:
+                print("ERROR!")
+                print("Insufficient fuel amount.")
+                input("Press any key to continue...")
+        else:
+            print("You decided not to convert the fuel...")
+
+
+def check_teleporter():
+    global module, teleporter, power, last_module
+    if module == teleporter:
+        print("You found the teleporter!")
+        print("Would you like to teleport to another module? It will use 50 power.")
+        action = input(">")
+        if action.upper() in ["Y", "YES"]:
+            while True:
+                try:
+                    tpm = int(input("Which module would you like to teleport to?:"))
+                    if tpm > 17 or tpm < 1:
+                        raise ValueError
+                    break
+                except ValueError:
+                    print("Please type a valid module.")
+
+            last_module = module
+            module = tpm
+            power -= 50
+            print("Starting teleport...")
+            time.sleep(2)
+            load_module()
+        else:
+            print("You decided not to teleport.")
+
+
 # Main program starts here
 
 spawn_npcs()  # Calls the function
@@ -432,7 +628,10 @@ while alive and not won:
     load_module()
     check_vent_shafts()
     check_info_panels()
+    check_power_distributor()
+    check_teleporter()
     move_queen()
+    worker_aliens()
     if won == False and alive == True:
         intuition()
         output_moves()
