@@ -394,12 +394,12 @@ def move_queen():
                         print("...and has escaped.")
                     print("We can hear scuttling in the ventilation shafts.")
                     valid_move = False
-                # Queen cannot land in a module with another ventilation shaft
-                while valid_move == False:
-                    valid_move = True
-                    queen = random.randint(1, num_modules)
-                    if queen in vent_shafts:
-                        valid_move = False
+                    # Queen cannot land in a module with another ventilation shaft
+                    while not valid_move:
+                        valid_move = True
+                        queen = random.randint(1, num_modules)
+                        if queen in vent_shafts:
+                            valid_move = False
                 # Queen always stops moving after travelling through shaft
                 moves_to_make = 0
 
@@ -419,8 +419,6 @@ def intuition():
         if connected_module in info_panels:
             print("There is a panel near here. We could use it to find lifeforms.")
             break
-
-
 
 
 # Main program starts here
