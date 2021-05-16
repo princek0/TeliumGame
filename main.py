@@ -22,6 +22,7 @@ workers = []  # Location of the worker aliens.
 previously_locked = []  # Locked modules.
 power_distributor = 0  # Location of the power distributor.
 teleporter = 0  # Location of the teleporter.
+easter_eggs = []  # Easter eggs found.
 
 
 # Procedure declarations
@@ -49,19 +50,25 @@ def output_module():  # This function prints which module the player is in and a
     print()
     print("-----------------------------------------------------------------")
     print()
-    print("You are in module", module, ".")
-    if module in workers:
+    if module != 99:
+        print("You are in module", module, ".")
+        if module in workers:
+            print()
+            print("There are workers in here...")
+        if module in vent_shafts:
+            print()
+            print("There are vent shafts in here...")
+        if module in info_panels:
+            print()
+            print("There are info panels in here...")
         print()
-        print("There are workers in here...")
-    if module in vent_shafts:
-        print()
-        print("There are vent shafts in here...")
-    if module in info_panels:
-        print()
-        print("There are info panels in here...")
-    print()
-    if fuel < 100:
-        print("LOW FUEL WARNING!")
+        if fuel < 100:
+            print("LOW FUEL WARNING!")
+    elif module == 99:
+        print("Easter egg found!")
+        module99_egg = "Module99 Egg"
+        if module99_egg not in easter_eggs:
+            easter_eggs.append(module99_egg)
 
 
 def output_moves():  # This function prints the possible modules the player may move to.
@@ -82,7 +89,7 @@ def get_action():  # This function gets what the player wants to do and where th
         action_modified = (''.join((item for item in action if not item.isdigit()))).replace(" ", "")
         if action_modified.upper() == "MOVE" or action_modified.upper() == "M":
             move = int(''.join((item for item in action if not item.isalpha())))
-            if move in possible_moves:
+            if move in possible_moves or move == 99:
                 valid_action = True
                 last_module = module
                 module = move
@@ -632,6 +639,7 @@ def menu():
     print("1. Start")
     print("2. How to play")
     print("3. Credits")
+    print("4. Easter eggs")
     action = int(input(">"))
     if action == 1:
         print("Loading game...")
@@ -648,11 +656,27 @@ def menu():
             "The objective is to kill the queen who is in one of the 17 modules.\n The queen "
             "has workers which you will also encounter.\n There are additional objects such as "
             "info-panels and vents.\n The queen can escape and so you must use your scanner to "
-            "lock certain modules to stop her from escaping. \n You can figure the rest out for yourself!\n Good luck!")
+            "lock certain modules to stop her from escaping. \n You can figure the rest out for yourself!\n "
+            "Good luck!\n")
         input("Press any key to return to the main menu...")
         menu()
     elif action == 3:
         print("Created by Prince.")
+        input("Press any key to return to the main menu...")
+        menu()
+    elif action == 4:
+        print("There are _ easter eggs in the game. Try to find them all!")
+        print("Your current list of easter eggs found:", easter_eggs)
+        input("Press any key to return to the main menu...")
+        menu()
+    elif action == 5:
+        print("Easter egg found!")
+        menu_egg = "Menu Egg"
+        if menu_egg in easter_eggs:
+            input("Press any key to return to the main menu...")
+            menu()
+        else:
+            easter_eggs.append(menu_egg)
         input("Press any key to return to the main menu...")
         menu()
 
