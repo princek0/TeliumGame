@@ -295,7 +295,7 @@ def battle():
             queen_turn = True
             print("\nQueen will go first.")
 
-        print("\nPlayer health: ", player_health, "Queen health: ", queen_health)
+        print("\nPlayer health:", player_health, "Queen health:", queen_health)
 
         # Set up the main game loop.
         while player_health != 0 or queen_health != 0:
@@ -707,12 +707,13 @@ def main():
     while alive and not won:
         load_module()
         move_queen()
-        check_vent_shafts()
-        check_info_panels()
-        check_power_distributor()
-        check_teleporter()
-        worker_aliens()
-        if won == False and alive == True:
+        if alive and not won:
+            check_vent_shafts()
+            check_info_panels()
+            check_power_distributor()
+            check_teleporter()
+            worker_aliens()
+        if not won and alive:
             intuition()
             output_moves()
             get_action()
