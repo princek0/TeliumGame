@@ -5,7 +5,7 @@ Telium Game (Unfinished) 17/05/21
 - There are instructions when you start the game.
 - Enjoy!
 
-Libraries used:
+# Libraries used:
 - random
 - turtle
 - time
