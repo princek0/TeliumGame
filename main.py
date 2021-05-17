@@ -226,7 +226,7 @@ def check_vent_shafts():  # This function checks if the player is in a module wi
         load_module()
 
 
-def check_info_panels():
+def check_info_panels(): # This function checks if the player is in a module with info panels and plays a sequence. 
     global module, info_panels, power
     if module in info_panels:
         if power > 50:
@@ -251,7 +251,7 @@ def check_info_panels():
             print("The space station does not have enough power to use them.")
 
 
-def lock():
+def lock(): # This function is for locking modules. 
     global num_modules, power, locked
     new_lock = int(input("Enter module to lock:"))
     if new_lock < 0 or new_lock > num_modules or new_lock in previously_locked:
@@ -274,7 +274,7 @@ def lock():
     print("Power:", power)
 
 
-def battle():
+def battle(): # This function is for when the player has their final battle againt the queen.
     global alive, won
     print("The queen is trapped...but you must kill her...")
     input("Press any key to continue...")
@@ -421,7 +421,7 @@ def battle():
             alive = False  # END OF BATTLE
 
 
-def move_queen():
+def move_queen(): # This function is for when the player meets the queen and the queen moves. 
     global alive, num_modules, module, last_module, locked, queen, won, vent_shafts
     # If we are in the same module as the queen...
     if module == queen:
@@ -476,7 +476,7 @@ def move_queen():
                 moves_to_make = 0
 
 
-def intuition():
+def intuition(): # This function is used for when the player is near an NPC. 
     global possible_moves, workers, vent_shafts, info_panels
     for connected_module in possible_moves:
         if connected_module in workers:
@@ -493,7 +493,7 @@ def intuition():
             break
 
 
-def worker_aliens():
+def worker_aliens(): # This function is for when a player encounters a worker alien.
     global module, workers, fuel, alive
     # Output alien encountered
     if module in workers:
@@ -510,9 +510,8 @@ def worker_aliens():
             print()
             print("How will you react? (B, M, R)")
             action = 0
-            while action not in ("B", "M", "R"):
+            while action not in ["B", "M", "R"]:
                 action = input("Press the trigger: ").upper()
-
             if action == "R":
                 print("You decide to run...")
                 death = random.randint(1, 7)
@@ -570,7 +569,7 @@ def worker_aliens():
         print()
 
 
-def check_power_distributor():
+def check_power_distributor(): # This function is for when a player meets a power distributor. 
     global module, fuel, power, power_distributor
     if module == power_distributor:
         print("The power distributor is in this module.")
@@ -611,7 +610,7 @@ def check_power_distributor():
             print("You decided not to convert the fuel...")
 
 
-def check_teleporter():
+def check_teleporter(): # This function is for when a player meets a teleporter. 
     global module, teleporter, power, last_module
     if module == teleporter:
         print("You found the teleporter!")
@@ -639,7 +638,7 @@ def check_teleporter():
 
 # Main program starts here
 
-def menu():
+def menu(): # This function is for the pre-game menu.
     print(r""" ███████████          ████   ███                            
 ░█░░░███░░░█         ░░███  ░░░                             
 ░   ░███  ░   ██████  ░███  ████  █████ ████ █████████████  
@@ -655,7 +654,14 @@ def menu():
     print("2. How to play")
     print("3. Credits")
     print("4. Easter eggs")
-    action = int(input(">"))
+    while True:
+                try:
+                    action = int(input(">"))
+                    if action not in [1, 2, 3, 4, 5]:
+                        raise ValueError
+                    break
+                except ValueError:
+                    print("Please type a valid number.")
     if action == 1:
         print("Loading game...")
         time.sleep(2)
