@@ -5,6 +5,7 @@ from random import shuffle, choice, randint  # More efficient than importing eve
 from turtle import Screen
 from time import sleep
 import csv
+from os import system
 
 # Main game variables. Sometimes I use multiple assignments to increase efficiency but I also keep readability.
 alive, won = True, False  # Hold whether the player is alive and has won respectively.
@@ -51,6 +52,7 @@ def get_modules_from(module):  # This function opens the csv file and finds the 
 
 def output_module():  # This function prints which module the player is in and adds basic decorations.
     global module
+    system('cls')
     print("\n-----------------------------------------------------------------\n")
     if module == -1:
         print("Easter egg found!")
@@ -168,11 +170,15 @@ def get_action():  # This function gets what the player wants to do and where th
                 easter_eggs.append(action_egg)
             input("Press any button to continue...")
         elif action_modified.upper() == "DIE":
-            print("You decided to sacrifice yourself...")
-            print("You died...")
-            alive = False
-            input("Press any key to continue...")
-            print("Game Over. You lose.")
+            system('cls')
+            print(r"""            ██████╗ ███████╗███████╗███████╗ █████╗ ████████╗
+            ██╔══██╗██╔════╝██╔════╝██╔════╝██╔══██╗╚══██╔══╝
+            ██║  ██║█████╗  █████╗  █████╗  ███████║   ██║   
+            ██║  ██║██╔══╝  ██╔══╝  ██╔══╝  ██╔══██║   ██║   
+            ██████╔╝███████╗██║     ███████╗██║  ██║   ██║   
+            ╚═════╝ ╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   
+                                                             """)
+            print("\nGame Over. You lose.")
             input("Press any key to finish...")
             reset()
             print("-----------------------------------------------------------------\n")
@@ -276,7 +282,8 @@ def lock():  # This function is for locking modules.
 
 def battle():  # This function is for when the player has their final battle againt the queen.
     global alive, won
-    print("The queen is trapped...but you must kill her...")
+    system('cls')
+    print("You must kill her...")
     input("Press any key to continue...")
     print("-----------------------------------------------------------------")
     while alive and not won:  # START OF BATTLE
@@ -497,9 +504,9 @@ def worker_aliens():  # This function is for when a player encounters a worker a
         successful_attack = False
         while not successful_attack:
             print("You can:\n")
-            print("- Blast your flamethrower to frighten it away.")
-            print("- Mega Blast your flamethrower to try to kill it.")
-            print("- Run away. Note: You might die! \n")
+            print("- (B) Blast your flamethrower to frighten it away.")
+            print("- (M) Mega Blast your flamethrower to try to kill it.")
+            print("- (R) Run away. Note: You might die! \n")
             print("How will you react? (B, M, R)")
             action = 0
             while action not in ["B", "M", "R"]:
@@ -631,17 +638,14 @@ def check_teleporter():  # This function is for when a player meets a teleporter
 # Main program starts here
 
 def menu():  # This function is for the pre-game menu.
-    print(r""" ███████████          ████   ███                            
-░█░░░███░░░█         ░░███  ░░░                             
-░   ░███  ░   ██████  ░███  ████  █████ ████ █████████████  
-    ░███     ███░░███ ░███ ░░███ ░░███ ░███ ░░███░░███░░███ 
-    ░███    ░███████  ░███  ░███  ░███ ░███  ░███ ░███ ░███ 
-    ░███    ░███░░░   ░███  ░███  ░███ ░███  ░███ ░███ ░███ 
-    █████   ░░██████  █████ █████ ░░████████ █████░███ █████
-   ░░░░░     ░░░░░░  ░░░░░ ░░░░░   ░░░░░░░░ ░░░░░ ░░░ ░░░░░ 
-
-
-                                                            """)
+    system('cls')
+    print(r"""████████╗███████╗██╗     ██╗██╗   ██╗███╗   ███╗
+╚══██╔══╝██╔════╝██║     ██║██║   ██║████╗ ████║
+   ██║   █████╗  ██║     ██║██║   ██║██╔████╔██║
+   ██║   ██╔══╝  ██║     ██║██║   ██║██║╚██╔╝██║
+   ██║   ███████╗███████╗██║╚██████╔╝██║ ╚═╝ ██║
+   ╚═╝   ╚══════╝╚══════╝╚═╝ ╚═════╝ ╚═╝     ╚═╝
+                                                """)
     print("1. Start")
     print("2. How to play")
     print("3. Credits")
@@ -655,6 +659,7 @@ def menu():  # This function is for the pre-game menu.
         except ValueError:
             print("Please type a valid number.")
     if action == 1:
+        system('cls')
         print("Loading game...")
         sleep(2)
         input("Press any key to begin...")
@@ -662,6 +667,7 @@ def menu():  # This function is for the pre-game menu.
         print("-----------------------------------------------------------------\n")
         main()
     elif action == 2:
+        system('cls')
         print(
             "\n Telium is a text-based game which means that you will have to type things in.\n "
             "The objective is to kill the queen who is in one of the 17 modules.\n The queen "
@@ -672,10 +678,12 @@ def menu():  # This function is for the pre-game menu.
         input("Press any key to return to the main menu...")
         menu()
     elif action == 3:
+        system('cls')
         print("Created by Prince.")
         input("Press any key to return to the main menu...")
         menu()
     elif action == 4:
+        system('cls')
         print("There are 4 easter eggs in the game. Try to find them all!")
         print("Your current list of easter eggs found:", easter_eggs)
         if len(easter_eggs) == 4:
@@ -683,6 +691,7 @@ def menu():  # This function is for the pre-game menu.
         input("Press any key to return to the main menu...")
         menu()
     elif action == 5:
+        system('cls')
         print("Easter egg found!")
         menu_egg = "Menu Egg"
         if menu_egg in easter_eggs:
@@ -695,6 +704,7 @@ def menu():  # This function is for the pre-game menu.
 
 
 def reset():  # This resets all variables for the next game.
+    system('cls')
     global easter_eggs, previously_vented, vent_shafts, info_panels, workers, previously_locked, possible_moves, power, fuel, module, last_module, alive, won, locked, queen, power_distributor, teleporter
     easter_eggs.clear()
     previously_vented.clear()
@@ -736,16 +746,34 @@ def main():
             get_action()
 
     if won:
+        system('cls')
+        print(r"""            ██╗   ██╗██╗ ██████╗████████╗ ██████╗ ██████╗ ██╗   ██╗
+                    ██║   ██║██║██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗╚██╗ ██╔╝
+                    ██║   ██║██║██║        ██║   ██║   ██║██████╔╝ ╚████╔╝ 
+                    ╚██╗ ██╔╝██║██║        ██║   ██║   ██║██╔══██╗  ╚██╔╝  
+                     ╚████╔╝ ██║╚██████╗   ██║   ╚██████╔╝██║  ██║   ██║   
+                      ╚═══╝  ╚═╝ ╚═════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   
+                                                                           """)
         print("Game over. You win!")
         input("Press any key to finish...")
         reset()
+        system('cls')
         print("-----------------------------------------------------------------\n")
         print("-----------------------------------------------------------------\n")
         menu()
     if not alive:
-        print("Game Over. You lose.")
+        system('cls')
+        print(r"""            ██████╗ ███████╗███████╗███████╗ █████╗ ████████╗
+                    ██╔══██╗██╔════╝██╔════╝██╔════╝██╔══██╗╚══██╔══╝
+                    ██║  ██║█████╗  █████╗  █████╗  ███████║   ██║   
+                    ██║  ██║██╔══╝  ██╔══╝  ██╔══╝  ██╔══██║   ██║   
+                    ██████╔╝███████╗██║     ███████╗██║  ██║   ██║   
+                    ╚═════╝ ╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   
+                                                                     """)
+        print("\nGame Over. You lose.")
         input("Press any key to finish...")
         reset()
+        system('cls')
         print("-----------------------------------------------------------------\n")
         print("-----------------------------------------------------------------\n")
         menu()
