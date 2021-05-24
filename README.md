@@ -4,6 +4,7 @@ Telium Game (Unfinished) 24/05/21
 - It's a text-based adventure game. 
 - There are instructions when you start the game.
 - I focused a lot on efficiency (you can see this in the comments).
+- Some of the ASCII art breaks depending on where and how you run the program, please edit it accordingly. 
 - Enjoy!
 
 <b>Libraries used:</b>
