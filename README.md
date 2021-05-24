@@ -12,3 +12,4 @@ Telium Game (Unfinished) 24/05/21
 - turtle
 - time
 - csv
+- os
