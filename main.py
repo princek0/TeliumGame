@@ -645,7 +645,7 @@ def menu():  # This function is for the pre-game menu.
    ██║   ██╔══╝  ██║     ██║██║   ██║██║╚██╔╝██║
    ██║   ███████╗███████╗██║╚██████╔╝██║ ╚═╝ ██║
    ╚═╝   ╚══════╝╚══════╝╚═╝ ╚═════╝ ╚═╝     ╚═╝
-                                                """)
+                                                """)  # ANSI Shadow ASCII font.
     print("1. Start")
     print("2. How to play")
     print("3. Credits")
