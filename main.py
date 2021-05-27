@@ -5,7 +5,6 @@ from random import shuffle, choice, randint  # More efficient than importing eve
 from turtle import Screen
 from time import sleep
 import csv
-from os import system
 
 # Main game variables. Sometimes I use multiple assignments to increase efficiency but I also keep readability.
 alive, won = True, False  # Hold whether the player is alive and has won respectively.
@@ -52,7 +51,6 @@ def get_modules_from(module):  # This function opens the csv file and finds the 
 
 def output_module():  # This function prints which module the player is in and adds basic decorations.
     global module
-    system('cls')
     print("\n-----------------------------------------------------------------\n")
     if module == -1:
         print("Easter egg found!")
@@ -92,98 +90,104 @@ def get_action():  # This function gets what the player wants to do and where th
     while not valid_action:
         print("What do you want to do next ? (MOVE + MODULE, FUEL, SCANNER, POWER, LIFEFORMS, INFO, MAP, DIE)")
         action = input(">")
-        action_modified = (''.join((item for item in action if not item.isdigit()))).replace(" ", "")
-        if action_modified.upper() == "MOVE" or action_modified.upper() == "M":
-            move = int(''.join((item for item in action if not item.isalpha())))
-            if move in possible_moves or move == 99:
-                valid_action = True
-                last_module = module
-                module = move
-            else:
-                print("The module must be connected to the current module.")
-        elif action_modified.upper() == "SCANNER":
-            command = input("Scanner ready. Enter command (LOCK, SCAN):")
-            if command.upper() == "LOCK":
-                lock()
-            if command.upper() == "SCAN":
-                print("Enter the module you want to scan. It must be connected to your current module.")
-                action = 0
-                while action not in possible_moves:
-                    print(possible_moves)
-                    action = int(input(">"))
+        while True:
+            try:
+                action_modified = (''.join((item for item in action if not item.isdigit()))).replace(" ", "")
+                if action_modified.upper() == "MOVE" or action_modified.upper() == "M":
+                    move = int(''.join((item for item in action if not item.isalpha())))
+                    if move in possible_moves or move == 99:
+                        valid_action = True
+                        last_module = module
+                        module = move
+                    else:
+                        print("The module must be connected to the current module.")
+                elif action_modified.upper() == "SCANNER":
+                    command = input("Scanner ready. Enter command (LOCK, SCAN):")
+                    if command.upper() == "LOCK":
+                        lock()
+                    if command.upper() == "SCAN":
+                        print("Enter the module you want to scan. It must be connected to your current module.")
+                        action = 0
+                        while action not in possible_moves:
+                            print(possible_moves)
+                            action = int(input(">"))
 
-                if action == queen:
-                    print("\nThere is a queen in there...")
-                    power -= 25
-                    print("25 fuel has been used.")
+                        if action == queen:
+                            print("\nThere is a queen in there...")
+                            power -= 25
+                            print("25 fuel has been used.")
+                            input("Press any button to continue...")
+                            print("-----------------------------------------------------------------")
+                        elif action in workers:
+                            print("\nThere are workers in there...")
+                            power -= 25
+                            print("25 fuel has been used.")
+                            input("Press any button to continue...")
+                            print("-----------------------------------------------------------------")
+                        elif action in vent_shafts:
+                            print("\nThere are vent shafts in there...")
+                            power -= 25
+                            print("25 fuel has been used.")
+                            input("Press any button to continue...")
+                            print("-----------------------------------------------------------------")
+                        elif action in info_panels:
+                            print("\nThere are info panels in there...")
+                            power -= 25
+                            print("25 fuel has been used.")
+                            input("Press any button to continue...")
+                            print("-----------------------------------------------------------------")
+                        else:
+                            print("There is nothing in there...")
+                            power -= 25
+                            print("25 fuel has been used.")
+                            input("Press any button to continue...")
+                            print("-----------------------------------------------------------------")
+                elif action_modified.upper() == "POWER":
+                    print("The space station has:", power, "power.")
+                    print("-----------------------------------------------------------------")
+                elif action_modified.upper() == "LIFEFORMS":
+                    print("Worker aliens are located in modules:", workers)
                     input("Press any button to continue...")
                     print("-----------------------------------------------------------------")
-                elif action in workers:
-                    print("\nThere are workers in there...")
-                    power -= 25
-                    print("25 fuel has been used.")
+                elif action_modified.upper() == "FUEL":
+                    print("You have:", fuel, "in your flamethrower.")
                     input("Press any button to continue...")
                     print("-----------------------------------------------------------------")
-                elif action in vent_shafts:
-                    print("\nThere are vent shafts in there...")
-                    power -= 25
-                    print("25 fuel has been used.")
+                elif action_modified.upper() == "MAP":
+                    wn = Screen()
+                    wn.bgpic('map.gif')
+                    wn.mainloop()
+                elif action_modified.upper() == "INFO":
+                    print("Ventilation shafts are located in modules:", vent_shafts)
+                    print("Information panels are located in modules:", info_panels)
+                    print("You are in module", module, ".")
                     input("Press any button to continue...")
                     print("-----------------------------------------------------------------")
-                elif action in info_panels:
-                    print("\nThere are info panels in there...")
-                    power -= 25
-                    print("25 fuel has been used.")
+                elif action_modified.upper() == "EGG":
+                    print("Easter egg found!")
+                    action_egg = "Action Egg"
+                    if action_egg not in easter_eggs:
+                        easter_eggs.append(action_egg)
                     input("Press any button to continue...")
-                    print("-----------------------------------------------------------------")
-                else:
-                    print("There is nothing in there...")
-                    power -= 25
-                    print("25 fuel has been used.")
-                    input("Press any button to continue...")
-                    print("-----------------------------------------------------------------")
-        elif action_modified.upper() == "POWER":
-            print("The space station has:", power, "power.")
-            print("-----------------------------------------------------------------")
-        elif action_modified.upper() == "LIFEFORMS":
-            print("Worker aliens are located in modules:", workers)
-            input("Press any button to continue...")
-            print("-----------------------------------------------------------------")
-        elif action_modified.upper() == "FUEL":
-            print("You have:", fuel, "in your flamethrower.")
-            input("Press any button to continue...")
-            print("-----------------------------------------------------------------")
-        elif action_modified.upper() == "MAP":
-            wn = Screen()
-            wn.bgpic('map.gif')
-            wn.mainloop()
-        elif action_modified.upper() == "INFO":
-            print("Ventilation shafts are located in modules:", vent_shafts)
-            print("Information panels are located in modules:", info_panels)
-            print("You are in module", module, ".")
-            input("Press any button to continue...")
-            print("-----------------------------------------------------------------")
-        elif action_modified.upper() == "EGG":
-            print("Easter egg found!")
-            action_egg = "Action Egg"
-            if action_egg not in easter_eggs:
-                easter_eggs.append(action_egg)
-            input("Press any button to continue...")
-        elif action_modified.upper() == "DIE":
-            system('cls')
-            print(r"""            ██████╗ ███████╗███████╗███████╗ █████╗ ████████╗
-            ██╔══██╗██╔════╝██╔════╝██╔════╝██╔══██╗╚══██╔══╝
-            ██║  ██║█████╗  █████╗  █████╗  ███████║   ██║   
-            ██║  ██║██╔══╝  ██╔══╝  ██╔══╝  ██╔══██║   ██║   
-            ██████╔╝███████╗██║     ███████╗██║  ██║   ██║   
-            ╚═════╝ ╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   
-                                                             """)
-            print("\nGame Over. You lose.")
-            input("Press any key to finish...")
-            reset()
-            print("-----------------------------------------------------------------\n")
-            print("-----------------------------------------------------------------\n")
-            menu()
+                elif action_modified.upper() == "DIE":
+                    print(r"""            ██████╗ ███████╗███████╗███████╗ █████╗ ████████╗
+                    ██╔══██╗██╔════╝██╔════╝██╔════╝██╔══██╗╚══██╔══╝
+                    ██║  ██║█████╗  █████╗  █████╗  ███████║   ██║   
+                    ██║  ██║██╔══╝  ██╔══╝  ██╔══╝  ██╔══██║   ██║   
+                    ██████╔╝███████╗██║     ███████╗██║  ██║   ██║   
+                    ╚═════╝ ╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   
+                                                                     """)
+                    print("\nGame Over. You lose.")
+                    input("Press any key to finish...")
+                    reset()
+                    print("-----------------------------------------------------------------\n")
+                    print("-----------------------------------------------------------------\n")
+                    menu()
+                break
+            except:
+                print("Please type 'm' then the number of the module. e.g. 'm17'")
+                break
+                
 
 
 def spawn_npcs():  # This function spawns NPCS.
@@ -282,7 +286,6 @@ def lock():  # This function is for locking modules.
 
 def battle():  # This function is for when the player has their final battle againt the queen.
     global alive, won
-    system('cls')
     print("You must kill her...")
     input("Press any key to continue...")
     print("-----------------------------------------------------------------")
@@ -531,7 +534,7 @@ def worker_aliens():  # This function is for when a player encounters a worker a
                     load_module()
                     break
 
-            while 1:  # Using 'while 1' is more efficient than using 'while True'
+            while True: 
                 try:
                     fuel_used = float(input("How much fuel will you use? ..."))
                     if fuel_used <= 0:
@@ -575,7 +578,7 @@ def check_power_distributor():  # This function is for when a player meets a pow
         print("Would you like to convert flamethrower fuel to power?")
         action = input(">")
         if action.upper() in ["Y", "YES"]:
-            while 1:
+            while True:
                 try:
                     amount = int(input("How much fuel would you like to convert?:"))
                     if amount <= 0:
@@ -616,7 +619,7 @@ def check_teleporter():  # This function is for when a player meets a teleporter
         print("Would you like to teleport to another module? It will use 50 power.")
         action = input(">")
         if action.upper() in ["Y", "YES"]:
-            while 1:
+            while True:
                 try:
                     tpm = int(input("Which module would you like to teleport to?:"))
                     if tpm > 17 or tpm < 1:
@@ -638,7 +641,6 @@ def check_teleporter():  # This function is for when a player meets a teleporter
 # Main program starts here
 
 def menu():  # This function is for the pre-game menu.
-    system('cls')
     print(r"""████████╗███████╗██╗     ██╗██╗   ██╗███╗   ███╗
 ╚══██╔══╝██╔════╝██║     ██║██║   ██║████╗ ████║
    ██║   █████╗  ██║     ██║██║   ██║██╔████╔██║
@@ -650,7 +652,7 @@ def menu():  # This function is for the pre-game menu.
     print("2. How to play")
     print("3. Credits")
     print("4. Easter eggs")
-    while 1:
+    while True:
         try:
             action = int(input(">"))
             if action not in [1, 2, 3, 4, 5]:
@@ -659,7 +661,6 @@ def menu():  # This function is for the pre-game menu.
         except ValueError:
             print("Please type a valid number.")
     if action == 1:
-        system('cls')
         print("Loading game...")
         sleep(2)
         input("Press any key to begin...")
@@ -667,7 +668,6 @@ def menu():  # This function is for the pre-game menu.
         print("-----------------------------------------------------------------\n")
         main()
     elif action == 2:
-        system('cls')
         print(
             "\n Telium is a text-based game which means that you will have to type things in.\n "
             "The objective is to kill the queen who is in one of the 17 modules.\n The queen "
@@ -678,12 +678,10 @@ def menu():  # This function is for the pre-game menu.
         input("Press any key to return to the main menu...")
         menu()
     elif action == 3:
-        system('cls')
         print("Created by Prince.")
         input("Press any key to return to the main menu...")
         menu()
     elif action == 4:
-        system('cls')
         print("There are 4 easter eggs in the game. Try to find them all!")
         print("Your current list of easter eggs found:", easter_eggs)
         if len(easter_eggs) == 4:
@@ -691,7 +689,6 @@ def menu():  # This function is for the pre-game menu.
         input("Press any key to return to the main menu...")
         menu()
     elif action == 5:
-        system('cls')
         print("Easter egg found!")
         menu_egg = "Menu Egg"
         if menu_egg in easter_eggs:
@@ -704,7 +701,6 @@ def menu():  # This function is for the pre-game menu.
 
 
 def reset():  # This resets all variables for the next game.
-    system('cls')
     global easter_eggs, previously_vented, vent_shafts, info_panels, workers, previously_locked, possible_moves, power, fuel, module, last_module, alive, won, locked, queen, power_distributor, teleporter
     easter_eggs.clear()
     previously_vented.clear()
@@ -746,8 +742,7 @@ def main():
             get_action()
 
     if won:
-        system('cls')
-        print(r"""            ██╗   ██╗██╗ ██████╗████████╗ ██████╗ ██████╗ ██╗   ██╗
+        print(r"""                    ██╗   ██╗██╗ ██████╗████████╗ ██████╗ ██████╗ ██╗   ██╗
                     ██║   ██║██║██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗╚██╗ ██╔╝
                     ██║   ██║██║██║        ██║   ██║   ██║██████╔╝ ╚████╔╝ 
                     ╚██╗ ██╔╝██║██║        ██║   ██║   ██║██╔══██╗  ╚██╔╝  
@@ -757,23 +752,20 @@ def main():
         print("Game over. You win!")
         input("Press any key to finish...")
         reset()
-        system('cls')
         print("-----------------------------------------------------------------\n")
         print("-----------------------------------------------------------------\n")
         menu()
     if not alive:
-        system('cls')
         print(r"""            ██████╗ ███████╗███████╗███████╗ █████╗ ████████╗
-                    ██╔══██╗██╔════╝██╔════╝██╔════╝██╔══██╗╚══██╔══╝
-                    ██║  ██║█████╗  █████╗  █████╗  ███████║   ██║   
-                    ██║  ██║██╔══╝  ██╔══╝  ██╔══╝  ██╔══██║   ██║   
-                    ██████╔╝███████╗██║     ███████╗██║  ██║   ██║   
-                    ╚═════╝ ╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   
-                                                                     """)
+            ██╔══██╗██╔════╝██╔════╝██╔════╝██╔══██╗╚══██╔══╝
+            ██║  ██║█████╗  █████╗  █████╗  ███████║   ██║   
+            ██║  ██║██╔══╝  ██╔══╝  ██╔══╝  ██╔══██║   ██║   
+            ██████╔╝███████╗██║     ███████╗██║  ██║   ██║   
+            ╚═════╝ ╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   
+                                                             """)
         print("\nGame Over. You lose.")
         input("Press any key to finish...")
         reset()
-        system('cls')
         print("-----------------------------------------------------------------\n")
         print("-----------------------------------------------------------------\n")
         menu()
